@@ -5,7 +5,7 @@ from langchain_community.llms import Ollama
 from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import UnstructedMarkdownLoader
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
 
@@ -14,7 +14,7 @@ import streamlit as st
 import os
 import time
 
-import code.utils
+import code.utils as utils
 
 utils.create_directories()
 print(utils.delete_all_files())
@@ -70,7 +70,7 @@ if 'chat_history' not in st.session_state:
 st.title(TITLE)
 
 # Upload a PDF file
-uploaded_file = st.file_uploader("Upload your PDF", type='pdf')
+uploaded_file = st.file_uploader("Upload your **MARKDOWN** file", type='md')
 
 for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
@@ -80,30 +80,34 @@ if uploaded_file is not None:
 
     FILE_NAME = 'files/'+uploaded_file.name
 
-    with st.status("Analyzing the document um..."):
+    if not os.path.isfile(FILENAME):
 
-        bytes_data = uploaded_file.read()
-        f = open(FILE_NAME, "wb")
-        f.write(bytes_data)
-        f.close()
+        utils.delete_all_files()
 
-        loader = PyPDFLoader(FILE_NAME)
-        data = loader.load()
+        with st.status("reading the document um..."):
 
-        # Initialize text splitter
-        text_splitter = RecursiveCharacterTextSplitter(
+            bytes_data = uploaded_file.read()
+            f = open(FILE_NAME, "wb")
+            f.write(bytes_data)
+            f.close()
+
+            loader = UnstructedMarkdownLoader(FILE_NAME,mode='elements')
+            data = loader.load()
+
+            # Initialize text splitter
+            text_splitter = RecursiveCharacterTextSplitter(
                 chunk_size=1500,
                 chunk_overlap=200,
                 length_function=len
             )
-        all_splits = text_splitter.split_documents(data)
+            all_splits = text_splitter.split_documents(data)
 
-        # Create and persist the vector store
-        st.session_state.vectorstore = Chroma.from_documents(
+            # Create and persist the vector store
+            st.session_state.vectorstore = Chroma.from_documents(
                 documents=all_splits,
                 embedding=OllamaEmbeddings(model=MODEL)
             )
-        st.session_state.vectorstore.persist()
+            st.session_state.vectorstore.persist()
 
     st.session_state.retriever = st.session_state.vectorstore.as_retriever()
     # Initialize the QA chain
@@ -120,7 +124,7 @@ if uploaded_file is not None:
             }
         )
 
-    # Chat input
+    # Chat input and output
     if user_input := st.chat_input("You:", key="user_input"):
 
         user_message = {"role": "User", "message": user_input}
