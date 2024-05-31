@@ -16,6 +16,8 @@ import streamlit as st
 
 import os
 import time
+import keyboard
+import psutil
 
 import code.utils as utils
 
@@ -71,6 +73,14 @@ if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
 st.title(TITLE)
+
+#exit button
+exit_app = st.sidebar.button('Explode!')
+if exit_app:
+    keyboard.press_and_release('ctrl+w')
+    pid = os.getpid()
+    p = psutil.Process(pid)
+    p.terminate()
 
 # Upload a PDF file
 uploaded_file = st.file_uploader("Upload your **MARKDOWN** file", type='md')
