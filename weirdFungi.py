@@ -80,7 +80,7 @@ if uploaded_file is not None:
 
     FILE_NAME = 'files/'+uploaded_file.name
 
-    if not os.path.isfile(FILENAME):
+    if not os.path.isfile(FILE_NAME):
 
         utils.delete_all_files()
 
