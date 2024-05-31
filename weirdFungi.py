@@ -5,7 +5,7 @@ from langchain_community.llms import Ollama
 from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import UnstructedMarkdownLoader
+from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
 
@@ -91,7 +91,7 @@ if uploaded_file is not None:
             f.write(bytes_data)
             f.close()
 
-            loader = UnstructedMarkdownLoader(FILE_NAME,mode='elements')
+            loader = UnstructuredMarkdownLoader(FILE_NAME,mode='elements')
             data = loader.load()
 
             # Initialize text splitter
