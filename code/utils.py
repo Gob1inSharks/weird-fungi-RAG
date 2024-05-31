@@ -8,7 +8,7 @@ def delete_all_files():
             FILE_PATH = os.path.join('files/',file)
             if os.path.isfile(FILE_PATH):
                 os.remove(FILE_PATH)
-        return '/n'
+        return '\n'
     except OSError:
         return 'error occurred while deleting files'
 
