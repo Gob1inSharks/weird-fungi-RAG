@@ -9,9 +9,6 @@ from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
 
-import nltk
-nltk.download('punkt')
-
 import streamlit as st
 
 import os
@@ -24,9 +21,8 @@ import code.utils as utils
 utils.create_directories()
 print(utils.delete_all_files())
 
-TITLE = 'Weird Fungi RAG'
-MODEL = 'yi:9b'
-#yi is a good, English-Chinese Billingual model
+TITLE = 'Weird Fungi RAG - Markdown Chatbot'
+MODEL = 'llama3:instruct'
 
 if 'template' not in st.session_state:
 
@@ -104,8 +100,9 @@ if uploaded_file is not None:
             f.write(bytes_data)
             f.close()
 
-            loader = UnstructuredMarkdownLoader(FILE_NAME,mode='elements')
+            loader = UnstructuredMarkdownLoader(FILE_NAME,mode = 'elements')
             data = loader.load()
+            #print(data)
 
             # Initialize text splitter
             text_splitter = RecursiveCharacterTextSplitter(
@@ -156,4 +153,4 @@ if uploaded_file is not None:
         st.session_state.chat_history.append(chatbot_message)
 
 else:
-    st.write("Please upload a PDF file :3")
+    st.write("Please upload a MD file :3 (only English support)")
