@@ -9,6 +9,9 @@ from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
 
+import nltk
+nltk.download('punkt')
+
 import streamlit as st
 
 import os
