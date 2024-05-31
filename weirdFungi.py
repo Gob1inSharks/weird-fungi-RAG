@@ -16,7 +16,7 @@ import streamlit as st
 
 import os
 import time
-import keyboard
+#import keyboard
 import psutil
 
 import code.utils as utils
@@ -77,7 +77,7 @@ st.title(TITLE)
 #exit button
 exit_app = st.sidebar.button('Explode!')
 if exit_app:
-    keyboard.press_and_release('ctrl+w')
+    #keyboard.press_and_release('ctrl+w') #problem with root permission, will fix later
     pid = os.getpid()
     p = psutil.Process(pid)
     p.terminate()
