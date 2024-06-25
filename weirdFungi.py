@@ -19,7 +19,7 @@ import psutil
 import code.utils as utils
 
 utils.create_directories()
-print(utils.delete_all_files())
+utils.delete_all_files()
 
 TITLE = 'Weird Fungi RAG - Markdown Chatbot'
 MODEL = 'llama3:instruct'
@@ -93,7 +93,7 @@ if uploaded_file is not None:
 
         utils.delete_all_files()
 
-        with st.status("reading the document um..."):
+        with st.status("reading the document, um..."):
 
             bytes_data = uploaded_file.read()
             f = open(FILE_NAME, "wb")
@@ -106,8 +106,8 @@ if uploaded_file is not None:
 
             # Initialize text splitter
             text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=1500,
-                chunk_overlap=200,
+                chunk_size=150,
+                chunk_overlap=30,
                 length_function=len
             )
             all_splits = text_splitter.split_documents(data)
@@ -143,7 +143,7 @@ if uploaded_file is not None:
             st.markdown(user_input)
 
         with st.chat_message("Weird Fungi"):
-            with st.spinner("Fungi is typing..."):
+            with st.spinner("typing..."):
                 response = st.session_state.qa_chain(user_input)
             message_placeholder = st.empty()
             full_response = response['result']
@@ -153,4 +153,4 @@ if uploaded_file is not None:
         st.session_state.chat_history.append(chatbot_message)
 
 else:
-    st.write("Please upload a MD file :3 (only English support)")
+    st.write("Please upload a MD file (only English support)")
